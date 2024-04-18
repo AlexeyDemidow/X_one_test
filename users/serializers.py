@@ -9,7 +9,7 @@ from rest_framework_simplejwt.serializers import TokenRefreshSerializer as JwtTo
 from rest_framework_simplejwt.serializers import TokenBlacklistSerializer as JwtTokenBlacklistSerializer
 from rest_framework_simplejwt.settings import api_settings
 
-from X_one_test import settings
+
 
 
 
