@@ -1,6 +1,5 @@
 import os
 
-from PIL import Image
 import requests
 from bs4 import BeautifulSoup
 import urllib.request
@@ -10,7 +9,6 @@ from drf_yasg import openapi
 from drf_yasg.inspectors import SwaggerAutoSchema
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
-from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_200_OK
@@ -22,7 +20,9 @@ from links.links_create_utils import cookies, headers
 
 
 class CustomAutoSchema(SwaggerAutoSchema):
-
+    """
+    Customizing the tags in Swagger
+    """
     def get_tags(self, operation_keys=None):
         tags = self.overrides.get('tags', None) or getattr(self.view, 'my_tags', [])
         if not tags:
@@ -31,7 +31,49 @@ class CustomAutoSchema(SwaggerAutoSchema):
         return tags
 
 
+def links_list_retrieve_response():
+    return {
+            HTTP_200_OK: openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                        "id": openapi.Schema(type=openapi.TYPE_INTEGER),
+                        "user": openapi.Schema(type=openapi.TYPE_INTEGER),
+                        "title": openapi.Schema(type=openapi.TYPE_STRING),
+                        "description": openapi.Schema(type=openapi.TYPE_STRING),
+                        "url": openapi.Schema(type=openapi.TYPE_STRING),
+                        "image": openapi.Schema(type=openapi.TYPE_STRING),
+                        "link_type": openapi.Schema(type=openapi.TYPE_STRING),
+                        "creation_date": openapi.Schema(type=openapi.TYPE_STRING),
+                        "change_date": openapi.Schema(type=openapi.TYPE_STRING),
+                }
+            )
+        }
+
+
+def link_collections_list_retrieve_response():
+    return {
+            HTTP_200_OK: openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    "id": openapi.Schema(type=openapi.TYPE_INTEGER),
+                    "user": openapi.Schema(type=openapi.TYPE_INTEGER),
+                    "title": openapi.Schema(type=openapi.TYPE_STRING),
+                    "description": openapi.Schema(type=openapi.TYPE_STRING),
+                    "user_links": openapi.Schema(
+                        type=openapi.TYPE_ARRAY,
+                        items=openapi.Schema(type=openapi.TYPE_INTEGER)
+                    ),
+                    "creation_date": openapi.Schema(type=openapi.TYPE_STRING),
+                    "change_date": openapi.Schema(type=openapi.TYPE_STRING),
+                }
+            )
+        }
+
+
 class UserLinkAPIViewSet(viewsets.ModelViewSet):
+    """
+    Viewset for endpoints of user links
+    """
     serializer_class = UserLinkSerializer
     permission_classes = (IsAuthenticated,)
     my_tags = ['Links']
@@ -134,22 +176,7 @@ class UserLinkAPIViewSet(viewsets.ModelViewSet):
     @swagger_auto_schema(
         operation_summary='Links list',
         operation_description='Show all user links',
-        responses={
-            HTTP_200_OK: openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                        "id": openapi.Schema(type=openapi.TYPE_INTEGER),
-                        "user": openapi.Schema(type=openapi.TYPE_INTEGER),
-                        "title": openapi.Schema(type=openapi.TYPE_STRING),
-                        "description": openapi.Schema(type=openapi.TYPE_STRING),
-                        "url": openapi.Schema(type=openapi.TYPE_STRING),
-                        "image": openapi.Schema(type=openapi.TYPE_STRING),
-                        "link_type": openapi.Schema(type=openapi.TYPE_STRING),
-                        "creation_date": openapi.Schema(type=openapi.TYPE_STRING),
-                        "change_date": openapi.Schema(type=openapi.TYPE_STRING),
-                }
-            )
-        }
+        responses=links_list_retrieve_response()
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
@@ -157,22 +184,7 @@ class UserLinkAPIViewSet(viewsets.ModelViewSet):
     @swagger_auto_schema(
         operation_summary='Link by id',
         operation_description='Show user link by id',
-        responses={
-            HTTP_200_OK: openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                        "id": openapi.Schema(type=openapi.TYPE_INTEGER),
-                        "user": openapi.Schema(type=openapi.TYPE_INTEGER),
-                        "title": openapi.Schema(type=openapi.TYPE_STRING),
-                        "description": openapi.Schema(type=openapi.TYPE_STRING),
-                        "url": openapi.Schema(type=openapi.TYPE_STRING),
-                        "image": openapi.Schema(type=openapi.TYPE_STRING),
-                        "link_type": openapi.Schema(type=openapi.TYPE_STRING),
-                        "creation_date": openapi.Schema(type=openapi.TYPE_STRING),
-                        "change_date": openapi.Schema(type=openapi.TYPE_STRING),
-                }
-            )
-        }
+        responses=links_list_retrieve_response()
     )
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
@@ -191,22 +203,7 @@ class UserLinkAPIViewSet(viewsets.ModelViewSet):
             },
             required=['title', 'description', 'url', 'link_type', 'image']
         ),
-        responses={
-            HTTP_200_OK: openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    "id": openapi.Schema(type=openapi.TYPE_INTEGER),
-                    "user": openapi.Schema(type=openapi.TYPE_INTEGER),
-                    "title": openapi.Schema(type=openapi.TYPE_STRING),
-                    "description": openapi.Schema(type=openapi.TYPE_STRING),
-                    "url": openapi.Schema(type=openapi.TYPE_STRING),
-                    "image": openapi.Schema(type=openapi.TYPE_STRING),
-                    "link_type": openapi.Schema(type=openapi.TYPE_STRING),
-                    "creation_date": openapi.Schema(type=openapi.TYPE_STRING),
-                    "change_date": openapi.Schema(type=openapi.TYPE_STRING),
-                }
-            )
-        }
+        responses=links_list_retrieve_response()
     )
     def update(self, request, *args, **kwargs):
         request.data['user'] = self.request.user.id
@@ -225,22 +222,7 @@ class UserLinkAPIViewSet(viewsets.ModelViewSet):
                 "image": openapi.Schema(type=openapi.TYPE_STRING),
             },
         ),
-        responses={
-            HTTP_200_OK: openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    "id": openapi.Schema(type=openapi.TYPE_INTEGER),
-                    "user": openapi.Schema(type=openapi.TYPE_INTEGER),
-                    "title": openapi.Schema(type=openapi.TYPE_STRING),
-                    "description": openapi.Schema(type=openapi.TYPE_STRING),
-                    "url": openapi.Schema(type=openapi.TYPE_STRING),
-                    "image": openapi.Schema(type=openapi.TYPE_STRING),
-                    "link_type": openapi.Schema(type=openapi.TYPE_STRING),
-                    "creation_date": openapi.Schema(type=openapi.TYPE_STRING),
-                    "change_date": openapi.Schema(type=openapi.TYPE_STRING),
-                }
-            )
-        }
+        responses=links_list_retrieve_response()
     )
     def partial_update(self, request, *args, **kwargs):
         request.data['user'] = self.request.user.id
@@ -256,6 +238,9 @@ class UserLinkAPIViewSet(viewsets.ModelViewSet):
 
 
 class UserLinkCollectionAPIViewSet(viewsets.ModelViewSet):
+    """
+    Viewset for endpoints of user link collections
+    """
     serializer_class = UserLinkCollectionSerializer
     permission_classes = (IsAuthenticated,)
     my_tags = ['Link Collections']
@@ -294,20 +279,7 @@ class UserLinkCollectionAPIViewSet(viewsets.ModelViewSet):
     @swagger_auto_schema(
         operation_summary='Collections list',
         operation_description='Show all user collections',
-        responses={
-            HTTP_200_OK: openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    "id": openapi.Schema(type=openapi.TYPE_INTEGER),
-                    "user": openapi.Schema(type=openapi.TYPE_INTEGER),
-                    "title": openapi.Schema(type=openapi.TYPE_STRING),
-                    "description": openapi.Schema(type=openapi.TYPE_STRING),
-                    "user_links": openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Schema(type=openapi.TYPE_INTEGER)),
-                    "creation_date": openapi.Schema(type=openapi.TYPE_STRING),
-                    "change_date": openapi.Schema(type=openapi.TYPE_STRING),
-                }
-            )
-        }
+        responses=link_collections_list_retrieve_response()
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
@@ -329,7 +301,9 @@ class UserLinkCollectionAPIViewSet(viewsets.ModelViewSet):
                 type=openapi.TYPE_OBJECT,
                 properties={
                     "user": openapi.Schema(type=openapi.TYPE_INTEGER),
-                    "user_links": openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Schema(type=openapi.TYPE_INTEGER)),
+                    "user_links": openapi.Schema(type=openapi.TYPE_ARRAY,
+                                                 items=openapi.Schema(type=openapi.TYPE_INTEGER)
+                                                 ),
                     "title": openapi.Schema(type=openapi.TYPE_STRING),
                     "description": openapi.Schema(type=openapi.TYPE_STRING),
                 }
@@ -351,22 +325,7 @@ class UserLinkCollectionAPIViewSet(viewsets.ModelViewSet):
     @swagger_auto_schema(
         operation_summary='Collection by id',
         operation_description='Show user collection by id',
-        responses={
-            HTTP_200_OK: openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                        "id": openapi.Schema(type=openapi.TYPE_INTEGER),
-                        "user": openapi.Schema(type=openapi.TYPE_INTEGER),
-                        "title": openapi.Schema(type=openapi.TYPE_STRING),
-                        "description": openapi.Schema(type=openapi.TYPE_STRING),
-                        "url": openapi.Schema(type=openapi.TYPE_STRING),
-                        "image": openapi.Schema(type=openapi.TYPE_STRING),
-                        "link_type": openapi.Schema(type=openapi.TYPE_STRING),
-                        "creation_date": openapi.Schema(type=openapi.TYPE_STRING),
-                        "change_date": openapi.Schema(type=openapi.TYPE_STRING),
-                }
-            )
-        }
+        responses=link_collections_list_retrieve_response()
     )
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
@@ -383,17 +342,7 @@ class UserLinkCollectionAPIViewSet(viewsets.ModelViewSet):
             },
             required=['user_links', 'title', 'description']
         ),
-        responses={
-            HTTP_200_OK: openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    "user": openapi.Schema(type=openapi.TYPE_INTEGER),
-                    "user_links": openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Schema(type=openapi.TYPE_INTEGER)),
-                    "title": openapi.Schema(type=openapi.TYPE_STRING),
-                    "description": openapi.Schema(type=openapi.TYPE_STRING),
-                }
-            )
-        }
+        responses=link_collections_list_retrieve_response()
     )
     def update(self, request, *args, **kwargs):
         data = self.get_data(request)
@@ -418,17 +367,7 @@ class UserLinkCollectionAPIViewSet(viewsets.ModelViewSet):
                 "description": openapi.Schema(type=openapi.TYPE_STRING),
             },
         ),
-        responses={
-            HTTP_200_OK: openapi.Schema(
-                type=openapi.TYPE_OBJECT,
-                properties={
-                    "user": openapi.Schema(type=openapi.TYPE_INTEGER),
-                    "user_links": openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Schema(type=openapi.TYPE_INTEGER)),
-                    "title": openapi.Schema(type=openapi.TYPE_STRING),
-                    "description": openapi.Schema(type=openapi.TYPE_STRING),
-                }
-            )
-        }
+        responses=link_collections_list_retrieve_response()
     )
     def partial_update(self, request, *args, **kwargs):
 

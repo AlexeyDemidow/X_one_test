@@ -6,6 +6,9 @@ from users.models import CustomUser
 
 
 class UserLink(models.Model):
+    """
+    User link model
+    """
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=1000)
@@ -31,6 +34,9 @@ class UserLink(models.Model):
 
 
 class UserLinkCollection(models.Model):
+    """
+    User link collection model
+    """
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     user_links = models.ManyToManyField(UserLink, blank=True)
     title = models.CharField(max_length=100)

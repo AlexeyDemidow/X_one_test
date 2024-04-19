@@ -8,8 +8,11 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 
-class CustomAutoSchema(SwaggerAutoSchema):
 
+class CustomAutoSchema(SwaggerAutoSchema):
+    """
+    Customizing the tags in Swagger
+    """
     def get_tags(self, operation_keys=None):
         tags = self.overrides.get('tags', None) or getattr(self.view, 'my_tags', [])
         if not tags:
@@ -19,6 +22,9 @@ class CustomAutoSchema(SwaggerAutoSchema):
 
 
 class TokenObtainPairResponseSerializer(serializers.Serializer):
+    """
+    Serializer to respond to a request to get a token pair
+    """
     access = serializers.CharField()
     refresh = serializers.CharField()
 
@@ -30,7 +36,11 @@ class TokenObtainPairResponseSerializer(serializers.Serializer):
 
 
 class DecoratedTokenObtainPairView(TokenObtainPairView):
+    """
+    Decorated representation for obtaining a pair of tokens
+    """
     my_tags = ['Authentication']
+
     @swagger_auto_schema(
         operation_summary='Obtain token',
         operation_description='Obtaining token by user login and password',
@@ -43,6 +53,9 @@ class DecoratedTokenObtainPairView(TokenObtainPairView):
 
 
 class TokenRefreshResponseSerializer(serializers.Serializer):
+    """
+    Serializer for responding to an access token update request
+    """
     access = serializers.CharField()
 
     def create(self, validated_data):
@@ -53,7 +66,11 @@ class TokenRefreshResponseSerializer(serializers.Serializer):
 
 
 class DecoratedTokenRefreshView(TokenRefreshView):
+    """
+    Decorated view to update the access token
+    """
     my_tags = ['Authentication']
+
     @swagger_auto_schema(
         operation_summary='Refresh token',
         operation_description='Updating the user token',
@@ -66,6 +83,9 @@ class DecoratedTokenRefreshView(TokenRefreshView):
 
 
 class TokenVerifyResponseSerializer(serializers.Serializer):
+    """
+    Serializer to respond to an access token validation request
+    """
     def create(self, validated_data):
         raise NotImplementedError()
 
@@ -74,7 +94,11 @@ class TokenVerifyResponseSerializer(serializers.Serializer):
 
 
 class DecoratedTokenVerifyView(TokenVerifyView):
+    """
+    Decorated representation for access token verification
+    """
     my_tags = ['Authentication']
+
     @swagger_auto_schema(
         operation_summary='Verify token',
         operation_description='User token verification',
@@ -87,6 +111,9 @@ class DecoratedTokenVerifyView(TokenVerifyView):
 
 
 class TokenBlacklistResponseSerializer(serializers.Serializer):
+    """
+    Serializer to respond to a request to add a token to a blacklist
+    """
     def create(self, validated_data):
         raise NotImplementedError()
 
@@ -95,7 +122,11 @@ class TokenBlacklistResponseSerializer(serializers.Serializer):
 
 
 class DecoratedTokenBlacklistView(TokenBlacklistView):
+    """
+    Decorated view for adding a token to the blacklist
+    """
     my_tags = ['Authentication']
+
     @swagger_auto_schema(
         responses={
             status.HTTP_200_OK: TokenBlacklistResponseSerializer,

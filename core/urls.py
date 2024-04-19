@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 from rest_framework import permissions
+
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
@@ -13,7 +14,8 @@ schema_view = get_schema_view(
     openapi.Info(
         title="Links storage (X_One test task)",
         default_version='v1',
-        description="API for storing and distributing to collections of custom links. When adding a link to the system, the system generates a title, description, link type and so on for user convenience.",
+        description="API for storing and distributing to collections of custom links. When adding a link to the system,"
+                    " the system generates a title, description, link type and so on for user convenience.",
         terms_of_service="https://www.google.com/policies/terms/",
         contact=openapi.Contact(email="contact@snippets.local"),
         license=openapi.License(name="BSD License"),
@@ -34,7 +36,7 @@ urlpatterns = [
     path('api/', include(user_link_collection_router.urls)),
 
     path('api/documentation/swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    path('api/documentation/swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('api/documentation/redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
 ]

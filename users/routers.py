@@ -4,6 +4,9 @@ from .views import CustomUserViewSet
 
 
 class CustomRouter(SimpleRouter):
+    """
+    Router for user endpoints
+    """
     routes = [
         Route(
             url=r'^{prefix}{trailing_slash}$',

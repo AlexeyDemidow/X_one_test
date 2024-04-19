@@ -6,6 +6,9 @@ from .models import CustomUser
 
 
 class CustomUserAdmin(UserAdmin):
+    """
+    User model view in admin panel
+    """
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name')}),

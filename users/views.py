@@ -1,11 +1,14 @@
 from django.contrib.auth import get_user_model, update_session_auth_hash
 from django.contrib.auth.tokens import default_token_generator
+
 from djoser import signals, utils
 from djoser.compat import get_user_email
 from djoser.conf import settings
+
 from drf_yasg import openapi
 from drf_yasg.inspectors import SwaggerAutoSchema
 from drf_yasg.utils import swagger_auto_schema
+
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound
@@ -16,7 +19,9 @@ User = get_user_model()
 
 
 class CustomAutoSchema(SwaggerAutoSchema):
-
+    """
+    Customizing the tags in Swagger
+    """
     def get_tags(self, operation_keys=None):
         tags = self.overrides.get('tags', None) or getattr(self.view, 'my_tags', [])
         if not tags:
@@ -26,6 +31,9 @@ class CustomAutoSchema(SwaggerAutoSchema):
 
 
 class BaseUserViewSetMixin:
+    """
+    Methods and functionalities for user management
+    """
     serializer_class = settings.SERIALIZERS.user
     queryset = User.objects.all()
     permission_classes = settings.PERMISSIONS.user
@@ -160,6 +168,9 @@ class BaseUserViewSetMixin:
 
 
 class CustomUserViewSet(BaseUserViewSetMixin, viewsets.ModelViewSet):
+    """
+    Viewset for user endpoints
+    """
     my_tags = ['Users']
 
     @swagger_auto_schema(

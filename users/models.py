@@ -5,7 +5,9 @@ from django.utils.translation import gettext_lazy as _
 
 
 class CustomUserManager(BaseUserManager):
-
+    """
+    Managing the creation of users and superusers
+    """
     def create_user(self, email, password, **extra_fields):
         if not email:
             raise ValueError(_('The Email must be set'))
@@ -28,6 +30,9 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractUser):
+    """
+    User model
+    """
     username = models.CharField(max_length=150, blank=True)
     email = models.EmailField(_('email address'), unique=True)
 
@@ -38,4 +43,3 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
-

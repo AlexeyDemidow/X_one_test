@@ -3,6 +3,9 @@ from django.contrib.auth.backends import ModelBackend
 
 
 class EmailBackend(ModelBackend):
+    """
+    Authenticating users by email instead of the standard username authentication method
+    """
     def authenticate(self, request, **kwargs):
         UserModel = get_user_model()
         try:

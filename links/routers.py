@@ -1,11 +1,12 @@
-from rest_framework import routers
 from rest_framework.routers import Route, DynamicRoute, SimpleRouter
 
 from links.views import UserLinkAPIViewSet, UserLinkCollectionAPIViewSet
 
 
 class CustomUserLinkRouter(SimpleRouter):
-
+    """
+    Custom router for user link endpoints
+    """
     routes = [
         Route(
             url=r'^{prefix}{trailing_slash}$',
@@ -45,7 +46,9 @@ class CustomUserLinkRouter(SimpleRouter):
 
 
 class CustomUserLinkCollectionRouter(SimpleRouter):
-
+    """
+    Custom router for user link collections endpoints
+    """
     routes = [
         Route(
             url=r'^{prefix}{trailing_slash}$',
@@ -87,6 +90,5 @@ class CustomUserLinkCollectionRouter(SimpleRouter):
 user_link_router = CustomUserLinkRouter()
 user_link_router.register(r'links', UserLinkAPIViewSet, basename='links')
 
-# user_link_collection_router = SimpleRouter()
 user_link_collection_router = CustomUserLinkCollectionRouter()
 user_link_collection_router.register(r'collections', UserLinkCollectionAPIViewSet, basename='collections')

@@ -4,7 +4,9 @@ from .models import UserLink, UserLinkCollection
 
 
 class UserLinkAdmin(admin.ModelAdmin):
-
+    """
+    User link model view in admin panel
+    """
     class Meta:
         model = UserLink
 
@@ -13,7 +15,9 @@ class UserLinkAdmin(admin.ModelAdmin):
 
 
 class UserLinkCollectionAdmin(admin.ModelAdmin):
-
+    """
+    User link collection model view in admin panel
+    """
     class Meta:
         model = UserLinkCollection
 
