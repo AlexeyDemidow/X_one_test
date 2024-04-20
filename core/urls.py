@@ -5,7 +5,6 @@ from rest_framework import permissions
 
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-
 from links.routers import user_link_router, user_link_collection_router
 from users.routers import custom_user_router
 from users.JWT_views import DecoratedTokenObtainPairView, DecoratedTokenRefreshView, DecoratedTokenVerifyView

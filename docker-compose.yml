@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+
+  x_one_test:
+    image: x_one_test_docker:latest
+    container_name: 'x_one_test'
+    restart: always
+
+    volumes:
+      - static_volume:/x_one_test/static
+    env_file:
+      - /.env
+    environment:
+      - DEBUG=${DEBUG}
+      - SECRET_KEY=${SECRET_KEY}
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_PORT=${EMAIL_PORT}
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+      - EMAIL_account_PASSWORD=${EMAIL_HOST}
+    command: >
+      /bin/bash -c "python manage.py collectstatic --noinput &&
+                    python manage.py makemigrations &&
+                    python manage.py migrate &&
+                    gunicorn -b 0.0.0.0:8000 core.wsgi:application"
+
+  nginx:
+    container_name: nginx
+    working_dir: /x_one_test
+    image: nginx:stable-alpine
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - static_volume:/x_one_test/static
+      - ./docker/nginx/:/etc/nginx/conf.d:ro
+    links:
+      - x_one_test
+    depends_on:
+      - x_one_test
+
+
+volumes:
+  static_volume:
+
